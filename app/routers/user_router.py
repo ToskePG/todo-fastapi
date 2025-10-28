@@ -7,11 +7,10 @@ from passlib.context import CryptContext
 from pydantic import constr
 
 # Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 def hash_password(password: str) -> str:
-    # Truncate to bcrypt limit
-    return pwd_context.hash(password[:72])
+    return pwd_context.hash(password)
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -50,15 +49,15 @@ def read_users(db: Session = Depends(get_db)):
     return db.query(User).all()
 
 # Read user by ID
-@router.get("/id/{user_id}", response_model=UserRead)
+@router.get("/{user_id}", response_model=UserRead)
 def read_user_by_id(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.user_id == user_id).first()
+    user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
 # Read user by username
-@router.get("/username/{username}", response_model=UserRead)
+@router.get("/{username}", response_model=UserRead)
 def read_user_by_username(username: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == username).first()
     if not user:
@@ -68,7 +67,7 @@ def read_user_by_username(username: str, db: Session = Depends(get_db)):
 # Delete own user
 @router.delete("/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.user_id == user_id).first()
+    user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
