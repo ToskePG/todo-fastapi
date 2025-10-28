@@ -32,3 +32,37 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+# Read all users
+@router.get("/")
+def read_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
+
+# Read user by ID
+@router.get("/id/{user_id}")
+def read_user_by_id(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+# Read user by username
+@router.get("/username/{username}")
+def read_user_by_username(username: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+# Delete own user
+@router.delete("/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Here we should verify user identity before deleting
+    # For now, allow deleting the user with given ID
+    db.delete(user)
+    db.commit()
+    return {"detail": "User deleted"}
