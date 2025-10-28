@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo FastAPI App</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .container { padding-top: 2rem; padding-bottom: 2rem; }
+        .card { border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .card-body { padding: 2rem; }
+        pre { background-color: #1e1e2f; color: #f8f8f2; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+        code { font-family: monospace; }
+        h1, h2, h3 { margin-top: 1.5rem; }
+        table { width: 100%; }
+        table th, table td { padding: 0.5rem; text-align: left; }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Todo FastAPI App</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+
+            <h1>📝 Todo FastAPI App</h1>
+            <p>A modern <strong>Todo application</strong> built with <strong>FastAPI</strong>, <strong>PostgreSQL</strong>, and <strong>Docker</strong>.<br>
+            Designed for personal and group task management with a simple, scalable backend and a clean frontend.</p>
+            <hr>
+
+            <h2>🚀 Features</h2>
+            <ul>
+                <li><strong>User Management</strong>
+                    <ul>
+                        <li>Register and login users (hashed passwords with bcrypt)</li>
+                    </ul>
+                </li>
+                <li><strong>Group Tasks</strong>
+                    <ul>
+                        <li>Create groups and assign tasks to multiple users</li>
+                        <li>Only group members can see group tasks</li>
+                    </ul>
+                </li>
+                <li><strong>Personal Tasks</strong>
+                    <ul>
+                        <li>Each user can manage individual tasks</li>
+                    </ul>
+                </li>
+                <li><strong>Permissions</strong>
+                    <ul>
+                        <li>Users can modify tasks they created or are assigned to</li>
+                        <li>Group admins can manage members and group names</li>
+                    </ul>
+                </li>
+                <li><strong>Database</strong>
+                    <ul>
+                        <li>PostgreSQL (Dockerized)</li>
+                        <li>Alembic for migrations</li>
+                    </ul>
+                </li>
+                <li><strong>Modern Frontend</strong>
+                    <ul>
+                        <li>FastAPI templates with <strong>Jinja2</strong></li>
+                        <li>Styled using <strong>Bootstrap 5</strong></li>
+                        <li>Responsive and mobile-friendly design</li>
+                    </ul>
+                </li>
+                <li><strong>Dockerized Development</strong>
+                    <ul>
+                        <li>Run Postgres and app in isolated containers</li>
+                        <li>Easy setup and reproducibility</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>📦 Tech Stack</h2>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Backend</td><td>FastAPI</td></tr>
+                    <tr><td>Database</td><td>PostgreSQL</td></tr>
+                    <tr><td>ORM</td><td>SQLAlchemy</td></tr>
+                    <tr><td>Migrations</td><td>Alembic</td></tr>
+                    <tr><td>Auth</td><td>Passlib bcrypt</td></tr>
+                    <tr><td>Frontend</td><td>Jinja2 + Bootstrap 5</td></tr>
+                    <tr><td>Containers</td><td>Docker + Docker Compose</td></tr>
+                </tbody>
+            </table>
+
+            <h2>⚡ Installation</h2>
+            <pre>
+# Clone repository
+git clone https://github.com/&lt;username&gt;/todo-fastapi.git
+cd todo-fastapi
+
+# Create virtual environment and activate
+python3 -m venv venv
+source venv/bin/activate  # Linux/Mac
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start PostgreSQL container
+docker compose up -d
+
+# Run database migrations
+alembic upgrade head
+
+# Start FastAPI app
+uvicorn app.main:app --reload
+            </pre>
+
+            <h2>🌐 Usage</h2>
+            <p>Open your browser at <code>http://127.0.0.1:8000</code></p>
+
+            <h2>🗂️ Project Structure</h2>
+            <pre>
+todo-fastapi/
+├─ app/
+│  ├─ core/           # Database, settings, utils
+│  ├─ models/         # SQLAlchemy models
+│  ├─ schemas/        # Pydantic schemas
+│  ├─ routes/         # API route modules
+│  ├─ templates/      # Jinja2 HTML templates
+│  └─ static/         # CSS, JS, favicon
+├─ alembic/           # Alembic migrations
+├─ docker-compose.yml # Docker setup
+├─ requirements.txt   # Python dependencies
+├─ README.md          # Project overview
+└─ .env               # Environment variables
+            </pre>
+
+            <h2>🛠️ Contributing</h2>
+            <pre>
+# Create a feature branch
+git checkout -b feature_branch
+
+# Commit your changes
+git add .
+git commit -m "Describe your feature"
+
+# Push branch and create a pull request
+git push -u origin feature_branch
+            </pre>
+
+            <h2>📜 License</h2>
+            <p>This project is licensed under the <strong>MIT License</strong>.</p>
+
+            <h2>💡 Notes</h2>
+            <ul>
+                <li>Make sure Docker and Docker Compose are installed</li>
+                <li>Virtual environment is recommended for local development</li>
+                <li>Alembic ensures your database schema is always versioned</li>
+                <li>Frontend is ready for expansion with dynamic task lists in the future</li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
