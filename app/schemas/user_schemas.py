@@ -1,4 +1,4 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, constr, EmailStr
 
 class UserCreate(BaseModel):
     first_name: str
@@ -17,11 +17,6 @@ class UserRead(BaseModel):
 
     class Config:
         from_attributes = True
-
-# ----------------------
-# Pydantic Schemas for Auth
-# ----------------------
-from pydantic import BaseModel, EmailStr, constr
 
 class RegisterUser(BaseModel):
     first_name: str

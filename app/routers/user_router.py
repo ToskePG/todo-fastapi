@@ -1,26 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, status
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-from app.core.database import SessionLocal
 from app.models.user import User
 from app.schemas.user_schemas import UserCreate, UserRead
 from app.auth.security import create_access_token, create_email_token, decode_token
 from app.utils.email_utils import send_verification_email
 from app.schemas.user_schemas import RegisterUser, LoginUser
+from fastapi.security import OAuth2PasswordRequestForm
+from app.core.database import get_db
 
 router = APIRouter(prefix="/users", tags=["users"])
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
-
-
-# ----------------------
-# DB Dependency
-# ----------------------
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 # ----------------------
@@ -82,9 +72,10 @@ def verify_email(token: str, db: Session = Depends(get_db)):
 
 
 @router.post("/login", status_code=status.HTTP_200_OK)
-def login_user(form_data: LoginUser, db: Session = Depends(get_db)):
-    """Login and return JWT"""
-    user = db.query(User).filter(User.email == form_data.email).first()
+def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    """Login and return JWT (OAuth2-compatible)"""
+    # U tvom kodu korisnik se loguje emailom, pa koristi form_data.username kao email
+    user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not pwd_context.verify(form_data.password, user.password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
@@ -126,9 +117,10 @@ def read_user_by_username(username: str, current_user: User = Depends(get_curren
 
 @router.delete("/me", response_model=UserRead, status_code=status.HTTP_200_OK)
 def delete_own_user(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    user = db.merge(current_user)
+
     """Delete the currently logged-in user and return the deleted user"""
     deleted_user = UserRead.from_orm(current_user)
-
     db.delete(current_user)
     db.commit()
 

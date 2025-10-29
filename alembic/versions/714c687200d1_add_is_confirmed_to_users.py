@@ -1,8 +1,8 @@
-"""Add is_confirmed column to users
+"""add is_confirmed to users
 
-Revision ID: f836e9d30c71
-Revises: b2ae0f0dbf62
-Create Date: 2025-10-29 00:54:02.674849
+Revision ID: 714c687200d1
+Revises: baf1af5feb7d
+Create Date: 2025-10-29 03:13:43.778397
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f836e9d30c71'
-down_revision: Union[str, Sequence[str], None] = 'b2ae0f0dbf62'
+revision: str = '714c687200d1'
+down_revision: Union[str, Sequence[str], None] = 'baf1af5feb7d'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
