@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
@@ -6,6 +6,8 @@ from app.core.database import SessionLocal
 from app.models.user import User
 from app.schemas.user_schemas import UserCreate, UserRead
 from app.auth.security import get_current_user
+from app.utils.email_utils import send_verification_email
+from app.auth.security import create_email_token
 
 router = APIRouter(prefix="/users", tags=["users"])
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
@@ -30,12 +32,21 @@ def hash_password(password: str) -> str:
 # PUBLIC ROUTES
 # ----------------------
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    """Register a new user (public endpoint)"""
+def register_user(user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    """Register a new user and send email confirmation"""
+
+    # Check for duplicate email
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
+    # Check for duplicate username
+    if db.query(User).filter(User.username == user.username).first():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already taken")
+
+    # Hash password
     hashed_pw = hash_password(user.password)
+
+    # Create user in DB
     db_user = User(
         first_name=user.first_name,
         last_name=user.last_name,
@@ -47,8 +58,13 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
 
-    return db_user
+    # Generate email verification token
+    token = create_email_token(db_user.email)
 
+    # Send verification email
+    send_verification_email(background_tasks, db_user.email, token)
+
+    return db_user
 
 # ----------------------
 # PROTECTED ROUTES

@@ -4,17 +4,16 @@ from fastapi import BackgroundTasks
 from app.core.config import settings
 
 def send_email(to_email: str, subject: str, body: str):
-    """Send plain text email via SMTP"""
+    """Send plain text email via SMTP (Outlook)"""
     msg = MIMEText(body)
     msg["Subject"] = subject
     msg["From"] = settings.SENDER_EMAIL
     msg["To"] = to_email
 
     with smtplib.SMTP(settings.SMTP_SERVER, settings.SMTP_PORT) as server:
-        server.starttls()
+        server.starttls()  # required by Outlook
         server.login(settings.SENDER_EMAIL, settings.SENDER_PASSWORD)
         server.send_message(msg)
-
 
 def send_verification_email(background_tasks: BackgroundTasks, to_email: str, token: str):
     """Compose and schedule sending of verification email"""
