@@ -7,7 +7,6 @@ class UserCreate(BaseModel):
     email: str
     password: constr(min_length=6, max_length=72)  # type: ignore # bcrypt-safe
 
-
 class UserRead(BaseModel):
     id: int
     first_name: str
