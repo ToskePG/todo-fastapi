@@ -19,7 +19,7 @@ class Group(Base):
     admin_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
 
     #Relationship definition
-    admin = relationship("User", backref="admin_of_group", foreign_keys=[admin_id])
+    admin = relationship("User", backref="admin_of_groups", foreign_keys=[admin_id])
     members = relationship(
         "User",
         secondary=group_members,
