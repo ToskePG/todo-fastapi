@@ -40,7 +40,7 @@ class UserInTask(BaseModel):
     last_name: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TaskRead(TaskBase):
     id: int
@@ -51,4 +51,4 @@ class TaskRead(TaskBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
